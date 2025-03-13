@@ -207,18 +207,21 @@ elif type == "seecaption":
 
 elif type == "deletecaption":
     await update_configs(user_id, 'caption', None)
+    buttons = [[InlineKeyboardButton('🔙 Back', callback_data="settings#caption")]]  # Added buttons
     await query.message.edit_text(
         "<b>Successfully updated</b>",
-        reply_markup=InlineKeyboardMarkup(buttons)
+        reply_markup=InlineKeyboardMarkup(buttons)  # Now buttons is defined
     )
 
 elif type == "addcaption":
     await query.message.delete()
     caption = await bot.ask(query.message.chat.id, "Send your custom caption\n/cancel - <code>Cancel this process</code>")
     if caption.text == "/cancel":
+        buttons = [[InlineKeyboardButton('🔙 Back', callback_data="settings#caption")]]  # Added buttons
         return await caption.reply_text(
                   "<b>Process canceled!</b>",
-                  reply_markup=InlineKeyboardMarkup(buttons))
+                  reply_markup=InlineKeyboardMarkup(buttons))  # Now buttons is defined
+
     try:
         caption.text.format(filename='', size='', caption='')
     except KeyError as e:
