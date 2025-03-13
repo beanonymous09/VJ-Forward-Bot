@@ -160,40 +160,101 @@ async def settings_query(bot, query):
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
 
-  elif type=="caption":
-     buttons = []
-     data = await get_configs(user_id)
-     caption = data['caption']
-     if caption is None:
+  elif type == "caption":
+    buttons = []
+    data = await get_configs(user_id)
+    caption = data['caption']
+
+    if caption is None:
         buttons.append([InlineKeyboardButton('✚ Add Caption ✚', 
                       callback_data="settings#addcaption")])
-     else:
+    else:
         buttons.append([InlineKeyboardButton('See Caption', 
                       callback_data="settings#seecaption")])
         buttons[-1].append(InlineKeyboardButton('🗑️ Delete Caption', 
                       callback_data="settings#deletecaption"))
-     buttons.append([InlineKeyboardButton('back', 
-                      callback_data="settings#main")])
-     await query.message.edit_text(
-        "<b><u>CUSTOM CAPTION</b></u>\n\n<b>You can set a custom caption to videos and documents. Normaly use its default caption</b>\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
-        reply_markup=InlineKeyboardMarkup(buttons))
+        buttons.append([InlineKeyboardButton('🔗 Replace Link', 
+                      callback_data="settings#replacelink")])
+        buttons.append([InlineKeyboardButton('✏️ Replace Word', 
+                      callback_data="settings#replaceword")])
 
-  elif type=="seecaption":   
-     data = await get_configs(user_id)
-     buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
+    buttons.append([InlineKeyboardButton('back', 
+                  callback_data="settings#main")])
+
+    await query.message.edit_text(
+        "<b><u>CUSTOM CAPTION</b></u>\n\n"
+        "<b>You can set a custom caption to videos and documents. Normally, it uses its default caption.</b>\n\n"
+        "<b><u>AVAILABLE FILLINGS:</b></u>\n"
+        "- <code>{filename}</code> : Filename\n"
+        "- <code>{size}</code> : File size\n"
+        "- <code>{caption}</code> : Default caption\n\n"
+        "🔗 Use 'Replace Link' to change Telegram links.\n"
+        "✏️ Use 'Replace Word' to substitute words in captions.",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
+elif type == "seecaption":   
+    data = await get_configs(user_id)
+    buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
                   callback_data="settings#addcaption")
                ],[
                InlineKeyboardButton('back', 
                  callback_data="settings#caption")]]
-     await query.message.edit_text(
+    await query.message.edit_text(
         f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data['caption']}</code>",
-        reply_markup=InlineKeyboardMarkup(buttons))
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
-  elif type=="deletecaption":
-     await update_configs(user_id, 'caption', None)
-     await query.message.edit_text(
-        "<b>successfully updated</b>",
-        reply_markup=InlineKeyboardMarkup(buttons))
+elif type == "deletecaption":
+    await update_configs(user_id, 'caption', None)
+    await query.message.edit_text(
+        "<b>Successfully updated</b>",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
+elif type == "addcaption":
+    await query.message.delete()
+    caption = await bot.ask(query.message.chat.id, "Send your custom caption\n/cancel - <code>Cancel this process</code>")
+    if caption.text == "/cancel":
+        return await caption.reply_text(
+                  "<b>Process canceled!</b>",
+                  reply_markup=InlineKeyboardMarkup(buttons))
+    try:
+        caption.text.format(filename='', size='', caption='')
+    except KeyError as e:
+        return await caption.reply_text(
+            f"<b>Wrong filling {e} used in your caption. Change it.</b>",
+            reply_markup=InlineKeyboardMarkup(buttons))
+    elif type == "replacelink":
+    await query.message.delete()
+    new_link = await bot.ask(query.message.chat.id, "Send the new Telegram link to replace old links.\n/cancel - <code>Cancel this process</code>")
+    
+    if new_link.text == "/cancel":
+        return await new_link.reply_text("<b>Process canceled!</b>", reply_markup=InlineKeyboardMarkup(buttons))
+
+    await update_configs(user_id, 'replace_link', new_link.text)  # Save the link
+    await new_link.reply_text("<b>Successfully updated replacement link!</b>", reply_markup=InlineKeyboardMarkup(buttons))
+
+elif type == "replaceword":
+    await query.message.delete()
+    words = await bot.ask(query.message.chat.id, "Send the word you want to replace and its replacement.\nFormat: <code>oldword -> newword</code>\n/cancel - <code>Cancel this process</code>")
+    
+    if words.text == "/cancel":
+        return await words.reply_text("<b>Process canceled!</b>", reply_markup=InlineKeyboardMarkup(buttons))
+    
+    if " -> " not in words.text:
+        return await words.reply_text("<b>Invalid format! Use:</b> <code>oldword -> newword</code>", reply_markup=InlineKeyboardMarkup(buttons))
+    
+    old_word, new_word = words.text.split(" -> ")
+    await update_configs(user_id, 'replace_word', {old_word.strip(): new_word.strip()})  # Save the word replacement
+    await words.reply_text("<b>Successfully updated word replacement!</b>", reply_markup=InlineKeyboardMarkup(buttons))
+
+    await update_configs(user_id, 'caption', caption.text)
+    await caption.reply_text(
+        "<b>Successfully updated</b>",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
 
   elif type=="addcaption":
      await query.message.delete()
