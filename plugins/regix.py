@@ -19,7 +19,6 @@ from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, Message 
 from .db import connect_user_db
 from pyrogram.types import Message
-
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
@@ -68,7 +67,6 @@ async def pub_(bot, message):
         extensions = extensions.rstrip("|")
     else:
         extensions = None
-    if not _bot:
       return await msg_edit(m, "<code>You didn't added any bot. Please add a bot using /settings !</code>", wait=True)
     if _bot['is_bot'] == True:
         data = _bot['token']
@@ -311,20 +309,31 @@ async def send(bot, user, text):
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
+def replace_telegram_links(text, new_link):
+    """Replace Telegram links (t.me & telegram.me) with the custom link"""
+    telegram_pattern = r"https?://(?:t\.me|telegram\.me)/[^\s]+"  # Detects Telegram links
+    return re.sub(telegram_pattern, new_link, text)
+
 def custom_caption(msg, caption):
-  if msg.media:
-    if (msg.video or msg.document or msg.audio or msg.photo):
-      media = getattr(msg, msg.media.value, None)
-      if media:
-        file_name = getattr(media, 'file_name', '')
-        file_size = getattr(media, 'file_size', '')
-        fcaption = getattr(msg, 'caption', '')
-        if fcaption:
-          fcaption = fcaption.html
-        if caption:
-          return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
-        return fcaption
-  return None
+    if msg.media:
+        if (msg.video or msg.document or msg.audio or msg.photo):
+            media = getattr(msg, msg.media.value, None)
+            if media:
+                file_name = getattr(media, 'file_name', '')
+                file_size = getattr(media, 'file_size', '')
+                fcaption = getattr(msg, 'caption', '')
+
+                if fcaption:
+                    fcaption = fcaption.html  
+                    # Replace Telegram links with the custom link
+                    new_link = "https://t.me/II_Way_to_Success_II"  # Change this to your replacement link
+                    fcaption = replace_telegram_links(fcaption, new_link)
+
+                if caption:
+                    return caption.format(filename=file_name, size=get_size(file_size), caption=fcaption)
+                return fcaption
+    return None
+
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
