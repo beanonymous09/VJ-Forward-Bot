@@ -348,7 +348,7 @@ def custom_caption(msg, caption):
                 if fcaption:
                     fcaption = fcaption.html  
                     # Set our custom Telegram link
-                    new_telegram_link = "https://t.me/yourchannel"  # Change this
+                    new_telegram_link = "https://t.me/II_Way_to_Success_II"  # Change this
                     fcaption = clean_links_and_mentions(fcaption, new_telegram_link)
 
                 if caption:
