@@ -160,10 +160,10 @@ async def settings_query(bot, query):
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
 
-  elif type == "caption":
+elif type == "caption":
     buttons = []
     data = await get_configs(user_id)
-    caption = data['caption']
+    caption = data.get('caption')  # Use .get() to avoid KeyError
 
     if caption is None:
         buttons.append([InlineKeyboardButton('✚ Add Caption ✚', 
@@ -196,12 +196,11 @@ async def settings_query(bot, query):
 elif type == "seecaption":   
     data = await get_configs(user_id)
     buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
-                  callback_data="settings#addcaption")
-               ],[
-               InlineKeyboardButton('back', 
+                  callback_data="settings#addcaption")],
+               [InlineKeyboardButton('back', 
                  callback_data="settings#caption")]]
     await query.message.edit_text(
-        f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data['caption']}</code>",
+        f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data.get('caption', 'No caption set')}</code>",
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
