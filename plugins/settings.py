@@ -210,7 +210,6 @@ elif type == "seecaption":
         [InlineKeyboardButton("🖋️ Edit Caption", callback_data="settings#addcaption")],
         [InlineKeyboardButton("back", callback_data="settings#main")]
     ]
-]
     await query.message.edit_text(
         f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data.get('caption', 'No caption set')}</code>",
         reply_markup=InlineKeyboardMarkup(buttons)
