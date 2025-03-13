@@ -160,7 +160,7 @@ async def settings_query(bot, query):
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
 
-elif type == "caption":
+ elif type == "caption":
     buttons = []
     data = await get_configs(user_id)
     caption = data.get('caption')  # Use .get() to avoid KeyError
@@ -193,7 +193,7 @@ elif type == "caption":
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
-elif type == "seecaption":   
+ elif type == "seecaption":   
     data = await get_configs(user_id)
     buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
                   callback_data="settings#addcaption")],
@@ -204,7 +204,7 @@ elif type == "seecaption":
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
-elif type == "deletecaption":
+ elif type == "deletecaption":
     await update_configs(user_id, 'caption', None)
     buttons = [[InlineKeyboardButton('🔙 Back', callback_data="settings#caption")]]  # Added buttons
     await query.message.edit_text(
@@ -212,7 +212,7 @@ elif type == "deletecaption":
         reply_markup=InlineKeyboardMarkup(buttons)  # Now buttons is defined
     )
 
-elif type == "addcaption":
+ elif type == "addcaption":
     await query.message.delete()
     caption = await bot.ask(query.message.chat.id, "Send your custom caption\n/cancel - <code>Cancel this process</code>")
     if caption.text == "/cancel":
@@ -237,7 +237,7 @@ elif type == "addcaption":
     await update_configs(user_id, 'replace_link', new_link.text)  # Save the link
     await new_link.reply_text("<b>Successfully updated replacement link!</b>", reply_markup=InlineKeyboardMarkup(buttons))
 
-elif type == "replaceword":
+ elif type == "replaceword":
     await query.message.delete()
     words = await bot.ask(query.message.chat.id, "Send the word you want to replace and its replacement.\nFormat: <code>oldword -> newword</code>\n/cancel - <code>Cancel this process</code>")
     
