@@ -161,8 +161,11 @@ async def settings_query(bot, query):
 elif type.startswith("removechannel"):
     chat_id = type.split('_')[1]
     await db.remove_channel(user_id, chat_id)
+
+    buttons = [[InlineKeyboardButton("Back", callback_data="settings#channels")]]
+
     await query.message.edit_text(
-        "<b>successfully updated</b>",
+        "<b>Successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
