@@ -144,42 +144,53 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
      
   elif type.startswith("editchannels"): 
-     chat_id = type.split('_')[1]
-     chat = await db.get_channel_details(user_id, chat_id)
-     buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel_{chat_id}")
-               ],
-               [InlineKeyboardButton('back', callback_data="settings#channels")]]
-     await query.message.edit_text(
-        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n<b>- TITLE:</b> <code>{chat['title']}</code>\n<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n<b>- USERNAME:</b> {chat['username']}",
-        reply_markup=InlineKeyboardMarkup(buttons))
+elif type.startswith("editchannels"): 
+    chat_id = type.split('_')[1]
+    chat = await db.get_channel_details(user_id, chat_id)
+    buttons = [
+        [InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removechannel_{chat_id}")],
+        [InlineKeyboardButton('back', callback_data="settings#channels")]
+    ]
+    await query.message.edit_text(
+        f"<b><u>📄 CHANNEL DETAILS</b></u>\n\n"
+        f"<b>- TITLE:</b> <code>{chat['title']}</code>\n"
+        f"<b>- CHANNEL ID: </b> <code>{chat['chat_id']}</code>\n"
+        f"<b>- USERNAME:</b> {chat['username']}",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
-  elif type.startswith("removechannel"):
-     chat_id = type.split('_')[1]
-     await db.remove_channel(user_id, chat_id)
-     await query.message.edit_text(
+elif type.startswith("removechannel"):
+    chat_id = type.split('_')[1]
+    await db.remove_channel(user_id, chat_id)
+    await query.message.edit_text(
         "<b>successfully updated</b>",
-        reply_markup=InlineKeyboardMarkup(buttons))
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
- elif type == "caption":
+elif type == "caption":
     buttons = []
     data = await get_configs(user_id)
-    caption = data.get('caption')  # Use .get() to avoid KeyError
+    caption = data.get("caption")  # Use .get() to avoid KeyError
 
     if caption is None:
-        buttons.append([InlineKeyboardButton('✚ Add Caption ✚', 
-                      callback_data="settings#addcaption")])
+        buttons.append([
+            InlineKeyboardButton("✚ Add Caption ✚", callback_data="settings#addcaption")
+        ])
     else:
-        buttons.append([InlineKeyboardButton('See Caption', 
-                      callback_data="settings#seecaption")])
-        buttons[-1].append(InlineKeyboardButton('🗑️ Delete Caption', 
-                      callback_data="settings#deletecaption"))
-        buttons.append([InlineKeyboardButton('🔗 Replace Link', 
-                      callback_data="settings#replacelink")])
-        buttons.append([InlineKeyboardButton('✏️ Replace Word', 
-                      callback_data="settings#replaceword")])
+        buttons.append([
+            InlineKeyboardButton("See Caption", callback_data="settings#seecaption")
+        ])
+        buttons[-1].append(InlineKeyboardButton("🗑️ Delete Caption", callback_data="settings#deletecaption"))
+        buttons.append([
+            InlineKeyboardButton("🔗 Replace Link", callback_data="settings#replacelink")
+        ])
+        buttons.append([
+            InlineKeyboardButton("✏️ Replace Word", callback_data="settings#replaceword")
+        ])
 
-    buttons.append([InlineKeyboardButton('back', 
-                  callback_data="settings#main")])
+    buttons.append([
+        InlineKeyboardButton("back", callback_data="settings#main")
+    ])
 
     await query.message.edit_text(
         "<b><u>CUSTOM CAPTION</b></u>\n\n"
@@ -193,12 +204,13 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
- elif type == "seecaption":   
+elif type == "seecaption":
     data = await get_configs(user_id)
-    buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
-                  callback_data="settings#addcaption")],
-               [InlineKeyboardButton('back', 
-                 callback_data="settings#caption")]]
+    buttons = [
+        [InlineKeyboardButton("🖋️ Edit Caption", callback_data="settings#addcaption")],
+        [InlineKeyboardButton("back", callback_data="settings#main")]
+    ]
+]
     await query.message.edit_text(
         f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data.get('caption', 'No caption set')}</code>",
         reply_markup=InlineKeyboardMarkup(buttons)
