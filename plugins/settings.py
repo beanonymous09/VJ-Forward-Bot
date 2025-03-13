@@ -144,7 +144,6 @@ async def settings_query(bot, query):
         reply_markup=InlineKeyboardMarkup(buttons))
      
   elif type.startswith("editchannels"): 
-elif type.startswith("editchannels"): 
     chat_id = type.split('_')[1]
     chat = await db.get_channel_details(user_id, chat_id)
     buttons = [
