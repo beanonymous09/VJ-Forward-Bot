@@ -160,23 +160,40 @@ async def settings_query(bot, query):
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
 
-  elif type=="caption":
-     buttons = []
-     data = await get_configs(user_id)
-     caption = data['caption']
-     if caption is None:
+elif type=="caption":
+    buttons = []
+    data = await get_configs(user_id)
+    caption = data.get("caption", None)  # Use .get() to avoid KeyError
+
+    if caption is None:
         buttons.append([InlineKeyboardButton('✚ Add Caption ✚', 
                       callback_data="settings#addcaption")])
-     else:
+    else:
         buttons.append([InlineKeyboardButton('See Caption', 
                       callback_data="settings#seecaption")])
         buttons[-1].append(InlineKeyboardButton('🗑️ Delete Caption', 
                       callback_data="settings#deletecaption"))
-     buttons.append([InlineKeyboardButton('back', 
+
+        # ✅ Add "Replace Link" and "Replace Word" buttons
+        buttons.append([InlineKeyboardButton('🔗 Replace Link', 
+                      callback_data="settings#replacelink")])
+        buttons.append([InlineKeyboardButton('✏️ Replace Word', 
+                      callback_data="settings#replaceword")])
+
+    buttons.append([InlineKeyboardButton('Back', 
                       callback_data="settings#main")])
-     await query.message.edit_text(
-        "<b><u>CUSTOM CAPTION</b></u>\n\n<b>You can set a custom caption to videos and documents. Normaly use its default caption</b>\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
-        reply_markup=InlineKeyboardMarkup(buttons))
+
+    await query.message.edit_text(
+        "<b><u>CUSTOM CAPTION</b></u>\n\n"
+        "<b>You can set a custom caption for videos and documents. Normally, it uses its default caption.</b>\n\n"
+        "<b><u>AVAILABLE FILLINGS:</b></u>\n"
+        "- <code>{filename}</code> : Filename\n"
+        "- <code>{size}</code> : File size\n"
+        "- <code>{caption}</code> : Default caption\n\n"
+        "🔗 Use 'Replace Link' to change Telegram links.\n"
+        "✏️ Use 'Replace Word' to substitute words in captions.",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
   elif type=="seecaption":   
      data = await get_configs(user_id)
@@ -212,6 +229,29 @@ async def settings_query(bot, query):
      await caption.reply_text(
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
+  elif type == "replacelink":
+    await query.message.delete()
+    link = await bot.ask(query.message.chat.id, "Send the new link to replace Telegram links.\n/cancel - <code>Cancel this process</code>")
+    
+    if link.text == "/cancel":
+        return await link.reply_text("<b>Process canceled!</b>", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data="settings#caption")]]))
+    
+    await update_configs(user_id, 'replacelink', link.text)
+    await link.reply_text("<b>Successfully updated replacement link!</b>", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data="settings#caption")]]))
+
+ elif type == "replaceword":
+    await query.message.delete()
+    word_data = await bot.ask(query.message.chat.id, "Send the word you want to replace and the new word (format: old_word=new_word)\n/cancel - <code>Cancel this process</code>")
+
+    if word_data.text == "/cancel":
+        return await word_data.reply_text("<b>Process canceled!</b>", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data="settings#caption")]]))
+
+    if "=" not in word_data.text:
+        return await word_data.reply_text("<b>Invalid format! Use: old_word=new_word</b>", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data="settings#caption")]]))
+
+    old_word, new_word = word_data.text.split("=", 1)
+    await update_configs(user_id, 'replaceword', {old_word.strip(): new_word.strip()})
+    await word_data.reply_text(f"<b>Successfully replaced '{old_word}' with '{new_word}'!</b>", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data="settings#caption")]]))
 
   elif type=="button":
      buttons = []
