@@ -157,8 +157,7 @@ async def settings_query(bot, query):
         f"<b>- USERNAME:</b> {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons)
     )
-
-elif type.startswith("removechannel"):
+  elif type.startswith("removechannel"):
     chat_id = type.split('_')[1]
     await db.remove_channel(user_id, chat_id)
 
