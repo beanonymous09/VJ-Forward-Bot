@@ -225,14 +225,17 @@ elif type == "seecaption":
         reply_markup=InlineKeyboardMarkup(buttons)  # Now buttons is defined
     )
 
- elif type == "addcaption":
+elif type == "addcaption":
     await query.message.delete()
     caption = await bot.ask(query.message.chat.id, "Send your custom caption\n/cancel - <code>Cancel this process</code>")
+    
+    buttons = [[InlineKeyboardButton("🔙 Back", callback_data="settings#caption")]]  # ✅ Define buttons
+
     if caption.text == "/cancel":
-        buttons = [[InlineKeyboardButton('🔙 Back', callback_data="settings#caption")]]  # Added buttons
         return await caption.reply_text(
                   "<b>Process canceled!</b>",
-                  reply_markup=InlineKeyboardMarkup(buttons))  # Now buttons is defined
+                  reply_markup=InlineKeyboardMarkup(buttons))
+ is defined
 
     try:
         caption.text.format(filename='', size='', caption='')
@@ -240,7 +243,7 @@ elif type == "seecaption":
         return await caption.reply_text(
             f"<b>Wrong filling {e} used in your caption. Change it.</b>",
             reply_markup=InlineKeyboardMarkup(buttons))
-    elif type == "replacelink":
+elif type == "replacelink":  # ✅ Fixed indentation
     await query.message.delete()
     new_link = await bot.ask(query.message.chat.id, "Send the new Telegram link to replace old links.\n/cancel - <code>Cancel this process</code>")
     
@@ -250,44 +253,19 @@ elif type == "seecaption":
     await update_configs(user_id, 'replace_link', new_link.text)  # Save the link
     await new_link.reply_text("<b>Successfully updated replacement link!</b>", reply_markup=InlineKeyboardMarkup(buttons))
 
- elif type == "replaceword":
+elif type == "replaceword":
     await query.message.delete()
     words = await bot.ask(query.message.chat.id, "Send the word you want to replace and its replacement.\nFormat: <code>oldword -> newword</code>\n/cancel - <code>Cancel this process</code>")
-    
+
     if words.text == "/cancel":
         return await words.reply_text("<b>Process canceled!</b>", reply_markup=InlineKeyboardMarkup(buttons))
-    
+
     if " -> " not in words.text:
         return await words.reply_text("<b>Invalid format! Use:</b> <code>oldword -> newword</code>", reply_markup=InlineKeyboardMarkup(buttons))
-    
+
     old_word, new_word = words.text.split(" -> ")
-    await update_configs(user_id, 'replace_word', {old_word.strip(): new_word.strip()})  # Save the word replacement
+    await update_configs(user_id, 'replace_word', {old_word.strip(): new_word.strip()})  # ✅ Fixed
     await words.reply_text("<b>Successfully updated word replacement!</b>", reply_markup=InlineKeyboardMarkup(buttons))
-
-    await update_configs(user_id, 'caption', caption.text)
-    await caption.reply_text(
-        "<b>Successfully updated</b>",
-        reply_markup=InlineKeyboardMarkup(buttons)
-    )
-
-
-  elif type=="addcaption":
-     await query.message.delete()
-     caption = await bot.ask(query.message.chat.id, "Send your custom caption\n/cancel - <code>cancel this process</code>")
-     if caption.text=="/cancel":
-        return await caption.reply_text(
-                  "<b>process canceled !</b>",
-                  reply_markup=InlineKeyboardMarkup(buttons))
-     try:
-         caption.text.format(filename='', size='', caption='')
-     except KeyError as e:
-         return await caption.reply_text(
-            f"<b>wrong filling {e} used in your caption. change it</b>",
-            reply_markup=InlineKeyboardMarkup(buttons))
-     await update_configs(user_id, 'caption', caption.text)
-     await caption.reply_text(
-        "<b>successfully updated</b>",
-        reply_markup=InlineKeyboardMarkup(buttons))
 
   elif type=="button":
      buttons = []
