@@ -157,26 +157,16 @@ async def settings_query(bot, query):
         f"<b>- USERNAME:</b> {chat['username']}",
         reply_markup=InlineKeyboardMarkup(buttons)
     )
-  elif type.startswith("removechannel"):
-    chat_id = type.split('_')[1]
+elif type.startswith("removechannel"):
+    chat_id = type.split('_')[1]  # ✅ Only one occurrence
     await db.remove_channel(user_id, chat_id)
 
-    buttons = [[InlineKeyboardButton("🔙 Back", callback_data="settings#channels")]]  # ✅ Defined buttons
+    buttons = [[InlineKeyboardButton("🔙 Back", callback_data="settings#channels")]]
 
     await query.message.edit_text(
         "<b>Successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons)
     )
-    chat_id = type.split('_')[1]
-    await db.remove_channel(user_id, chat_id)
-
-    buttons = [[InlineKeyboardButton("Back", callback_data="settings#channels")]]
-
-    await query.message.edit_text(
-        "<b>Successfully updated</b>",
-        reply_markup=InlineKeyboardMarkup(buttons)
-    )
-
 elif type == "caption":
     buttons = []
     data = await get_configs(user_id)
@@ -184,8 +174,7 @@ elif type == "caption":
 
     if caption is None:
         buttons.append([
-            InlineKeyboardButton("✚ Add Caption ✚", callback_data="settings#addcaption")
-        ])
+            InlineKeyboardButton("✚ Add Caption ✚", callback_data="settings#addcaption")])
     else:
         buttons.append([
             InlineKeyboardButton("See Caption", callback_data="settings#seecaption")
