@@ -83,8 +83,8 @@ async def run(bot, message):
         return
     forward_id = f"{user_id}-{skipno.id}"
     buttons = [[
-        InlineKeyboardButton('Yes', callback_data=f"start_public_{forward_id}"),
-        InlineKeyboardButton('No', callback_data="close_btn")
+        InlineKeyboardButton('Yes ✅', callback_data=f"start_public_{forward_id}"),
+        InlineKeyboardButton('No ❌', callback_data="close_btn")
     ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await message.reply_text(
@@ -93,6 +93,7 @@ async def run(bot, message):
         reply_markup=reply_markup
     )
     STS(forward_id).store(chat_id, toid, int(skipno.text), int(last_msg_id))
+
 @Client.on_callback_query(filters.regex(r"^start_batch_(\d+)$"))
 async def confirm_batch_forward(client, query: CallbackQuery):
     user_id = int(query.matches[0].group(1))
