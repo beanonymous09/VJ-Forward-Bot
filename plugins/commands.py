@@ -15,7 +15,7 @@ import time as time
 from os import environ, execle, system
 import json
 import random
-from datetime import datetime, time
+import time
 from pyrogram import Client, filters, idle
 
 START_TIME = time.time()
