@@ -216,17 +216,6 @@ def save_scheduled_jobs(jobs):
 
 scheduled_jobs = load_scheduled_jobs()
 
-# Create Bot Client
-app = Client("quote_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
-
-# Function to Check if User is an Admin
-async def is_admin(client, chat_id, user_id):
-    try:
-        chat_member = await client.get_chat_member(chat_id, user_id)
-        return chat_member.status in ["administrator", "creator"]
-    except:
-        return False
-
 # Command to send quote category buttons with scheduling
 @app.on_message(filters.command("quote") & filters.group)
 async def quote_options(client, message):
