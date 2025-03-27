@@ -9,10 +9,17 @@ from typing import Union, Optional, AsyncGenerator
 from logging.handlers import RotatingFileHandler
 from plugins.regix import restart_forwards
 from plugins.quotes import *
+from pyrogram import Client, filters
+from pyrogram.types import Message
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
+
+@app.on_message(filters.command("ping"))
+async def ping_pong(client: Client, message: Message):
+    await message.reply_text("Pong!")
+
 
 if __name__ == "__main__":
     VJBot = VJ(
