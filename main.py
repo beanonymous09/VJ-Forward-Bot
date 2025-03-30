@@ -16,7 +16,7 @@ from pyrogram.types import Message
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-@app.on_message(filters.command("ping"))
+@Client.on_message(filters.command("ping"))
 async def ping_pong(client: Client, message: Message):
     await message.reply_text("Pong!")
 
