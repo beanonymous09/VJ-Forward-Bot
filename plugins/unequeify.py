@@ -108,7 +108,8 @@ async def unequify(client, message):
       return await sts.edit(e)
    try:
        k = await bot.send_message(chat_id, text="testing")
-       await k.delete()
+       await bot.pin_chat_message(chat_id, k.message_id)
+
    except:
        await sts.edit(f"**please make your [userbot](t.me/{_bot['username']}) admin in target chat with full permissions**")
        return await bot.stop()
