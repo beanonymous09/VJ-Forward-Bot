@@ -86,7 +86,7 @@ async def pub_(bot, message):
     except:
        await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(frwd_id), True)
        return await stop(client, user)
-   try:
+    try:
        k = await bot.send_message(chat_id, text="testing")
        await bot.pin_chat_message(chat_id, k.message_id)
 
@@ -542,8 +542,9 @@ async def restart_pending_forwads(bot, user):
           await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(firwd_id), True)
           return await stop(client, user)
        try:
-          k = await client.send_message(i.TO, "Testing")
-          await k.delete()
+           k = await bot.send_message(chat_id, text="testing")
+           await bot.pin_chat_message(chat_id, k.message_id)
+
        except:
           await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(forward_id), True)
           return await stop(client, user)
