@@ -87,44 +87,44 @@ async def pub_(bot, message):
        await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(frwd_id), True)
        return await stop(client, user)
     try:
-       k = await bot.send_message(chat_id, text="testing")
-       await bot.pin_chat_message(chat_id, k.message_id, disable_notification=False)
+    k = await client.send_message(i.TO, "Testing permissions...")
+except:
+    await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
+    return await stop(client, user)
 
-    except:
-       await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
-       return await stop(client, user)
-    user_have_db = False
-    dburi = datas['db_uri']
-    if dburi is not None:
-        connected, user_db = await connect_user_db(user, dburi, i.TO)
-        if not connected:
-            await msg_edit(m, "<code>Cannot Connected Your db Errors Found Dup files Have Been Skipped after Restart</code>")
-        else:
-            user_have_db = True
-    temp.forwardings += 1
-    await db.add_frwd(user)
-    await send(client, user, "<b>Fᴏʀᴡᴀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ🔥</b>")
-    sts.add(time=True)
-    sleep = 1 if _bot['is_bot'] else 10
-    await msg_edit(m, "<code>processing...</code>") 
-    temp.IS_FRWD_CHAT.append(i.TO)
-    temp.lock[user] = locked = True
-    dup_files = []
-    if locked:
-        try:
-          MSG = []
-          pling=0
-          await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-          async for message in iter_messages(client, chat_id=sts.get("FROM"), limit=sts.get("limit"), offset=sts.get("skip"), filters=filter, max_size=max_size):
-                if await is_cancelled(client, user, m, sts):
-                   if user_have_db:
-                      await user_db.drop_all()
-                      await user_db.close()
-                   return
-                if pling %20 == 0: 
-                   await edit(user, m, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)
-                pling += 1
-                sts.add('fetched')
+user_have_db = False
+dburi = datas['db_uri']
+if dburi is not None:
+    connected, user_db = await connect_user_db(user, dburi, i.TO)
+    if not connected:
+        await msg_edit(m, "<code>Cannot Connected Your db Errors Found Dup files Have Been Skipped after Restart</code>")
+    else:
+        user_have_db = True
+
+temp.forwardings += 1
+await db.add_frwd(user)
+await send(client, user, "<b>Fᴏʀᴡᴀᴅɪɴɢ sᴛᴀʀᴛᴇᴅ🔥</b>")
+sts.add(time=True)
+await edit(user, k, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)  # Show status in test message when forwarding starts
+sleep = 1 if _bot['is_bot'] else 10
+await msg_edit(m, "<code>processing...</code>")
+temp.IS_FRWD_CHAT.append(i.TO)
+temp.lock[user] = locked = True
+dup_files = []
+if locked:
+    try:
+        MSG = []
+        pling = 0
+        async for message in iter_messages(client, chat_id=sts.get("FROM"), limit=sts.get("limit"), offset=sts.get("skip"), filters=filter, max_size=max_size):
+            if await is_cancelled(client, user, m, sts):
+                if user_have_db:
+                    await user_db.drop_all()
+                    await user_db.close()
+                return
+            if pling % 20 == 0:
+                await edit(user, k, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)  # Update status in test message
+            pling += 1
+            sts.add('fetched')
                 if message == "DUPLICATE":
                    sts.add('duplicate')
                    continue
@@ -176,12 +176,11 @@ async def pub_(bot, message):
             return await stop(client, user)
         temp.IS_FRWD_CHAT.remove(sts.TO)
         await send(client, user, "<b>🎉 ғᴏʀᴡᴀᴅɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ</b>")
-        await edit(user, m, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", sts) 
+        await edit(user, k, 'ᴄᴏᴍᴘʟᴇᴛᴇᴅ', "completed", sts)  # Final status in test message
         if user_have_db:
             await user_db.drop_all()
             await user_db.close()
         await stop(client, user)
-
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
