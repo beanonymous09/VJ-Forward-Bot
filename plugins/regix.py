@@ -105,14 +105,18 @@ async def pub_(bot, message):
        await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(frwd_id), True)
        return await stop(client, user)
     try:
-       if not hasattr(i, "status_msg"):  # Store the status message once
-           i.status_msg = await client.send_message(i.TO, f"✅ sᴜᴄᴄᴇғᴜʟʟʏ Fᴡᴅ : <code>0</code>")
+       if not sts.get("status_msg_id"):  # Store the status message ID only once
+           status_msg = await client.send_message(i.TO, f"✅ sᴜᴄᴄᴇғᴜʟʟʏ Fᴡᴅ : <code>0</code>")
+           sts.add("status_msg_id", status_msg.id)
 
        forwarded = sts.get('total_files') + 1  # Increment forward count
        sts.add('total_files', 1)
 
-       # **EDIT the same message to update live status**
-       await client.edit_message_text(i.TO, i.status_msg.id, f"✅ sᴜᴄᴄᴇғᴜʟʟʏ Fᴡᴅ : <code>{forwarded}</code>")
+    # **Update live status using edit() function**
+       await edit(user, status_msg, title, 5, sts)
+
+   except Exception as e:
+       print(f"Error updating forward status: {e}")
 
     except:
        await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
