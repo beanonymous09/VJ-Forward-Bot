@@ -105,8 +105,10 @@ async def pub_(bot, message):
        await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(frwd_id), True)
        return await stop(client, user)
     try:
-       k = await client.send_message(i.TO, "Testing")
-       await k.delete()
+       forwarded = sts.get('total_files') + 1  # Increase forwarding count
+       sts.add('total_files', 1)
+       msg = await client.send_message(i.TO, f"✅ sᴜᴄᴄᴇғᴜʟʟʏ Fᴡᴅ : <code>{forwarded}</code>")
+
     except:
        await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
        return await stop(client, user)
