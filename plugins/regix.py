@@ -81,16 +81,18 @@ async def pub_(bot, message):
     except Exception as e:  
       return await m.edit(e)
     await msg_edit(m, "<code>processing..</code>")
-    try: 
-       await client.get_messages(sts.get("FROM"), sts.get("limit"))
-    except:
-       await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be member over there) or  if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(frwd_id), True)
-       return await stop(client, user)
-    try:
+try:
+    await client.get_messages(sts.get("FROM"), sts.get("limit"))
+except:
+    await msg_edit(m, f"**Source chat may be a private channel / group. Use userbot (user must be a member over there) or if Make Your [Bot](t.me/{_bot['username']}) an admin over there**", retry_btn(frwd_id), True)
+    return await stop(client, user)
+
+try:
     k = await client.send_message(i.TO, "Testing permissions...")
 except:
     await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
     return await stop(client, user)
+
 
 user_have_db = False
 dburi = datas['db_uri']
