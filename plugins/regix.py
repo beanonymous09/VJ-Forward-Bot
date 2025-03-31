@@ -114,10 +114,7 @@ async def pub_(bot, message):
 
     # **Update live status using edit() function**
        await edit(user, status_msg, title, 5, sts)
-
-   except Exception as e:
-       print(f"Error updating forward status: {e}")
-
+    
     except:
        await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
        return await stop(client, user)
