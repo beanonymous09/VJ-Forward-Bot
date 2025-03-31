@@ -117,7 +117,7 @@ async def pub_(bot, message):
    
        if forwarded >= i.total_files:
            await client.delete_messages(i.TO, sts.get("status_msg_id"))
-          sts.remove("status_msg_id")
+           sts.remove("status_msg_id")
     except:
        await msg_edit(m, f"**Please Make Your [UserBot / Bot](t.me/{_bot['username']}) Admin In Target Channel With Full Permissions**", retry_btn(frwd_id), True)
        return await stop(client, user)
