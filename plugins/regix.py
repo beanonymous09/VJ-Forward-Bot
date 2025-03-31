@@ -118,21 +118,23 @@ if locked:
         MSG = []
         pling = 0
         async for message in iter_messages(client, chat_id=sts.get("FROM"), limit=sts.get("limit"), offset=sts.get("skip"), filters=filter, max_size=max_size):
-            if await is_cancelled(client, user, m, sts):
-                if user_have_db:
-                    await user_db.drop_all()
-                    await user_db.close()
-                return
-            if pling % 20 == 0:
-                await edit(user, k, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)  # Update status in test message
-            pling += 1
-            sts.add('fetched')
-                if message == "DUPLICATE":
-                   sts.add('duplicate')
-                   continue
-                elif message == "FILTERED":
-                   sts.add('filtered')
-                   continue 
+    if await is_cancelled(client, user, m, sts):
+        if user_have_db:
+            await user_db.drop_all()
+            await user_db.close()
+        return
+    if pling % 20 == 0:
+        await edit(user, k, 'ᴘʀᴏɢʀᴇssɪɴɢ', 5, sts)  # Update status in test message
+    pling += 1
+    sts.add('fetched')
+
+    if message == "DUPLICATE":  # Fix indentation
+        sts.add('duplicate')
+        continue
+    elif message == "FILTERED":
+        sts.add('filtered')
+        continue
+
                 elif message.empty or message.service:
                    sts.add('deleted')
                    continue
